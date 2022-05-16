@@ -43,3 +43,20 @@ VALUES (
         51.4893,
         -0.1440
     );
+INSERT INTO food_packs (locations_id, description)
+VALUES (1, "apples"),
+    (1, "carrots"),
+    (2, "ham"),
+    (2, "beans"),
+    (3, "chard"),
+    (3, "potatoes"),
+    (2, "ham"),
+    (2, "beans"),
+    (4, "peas"),
+    (4, "corn"),
+    (4, "sausages"),
+    (5, "eggs"),
+    (5, "spinach"),
+    (5, "radishes"),
+    (5, "ice-cream");
+-- reservations if we have time.
