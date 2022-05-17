@@ -1,14 +1,15 @@
 from flask import Flask, jsonify
 import mysql.connector
+from config import HOST, DATABASE, USER, PASSWORD
 
 app = Flask(__name__)
 port = 5000
 
 connection = mysql.connector.connect(
-    host='localhost',
-    database='waste_not',
-    user='waste_not_admin',
-    password='admin',
+    host=HOST,
+    database=DATABASE,
+    user=USER,
+    password=PASSWORD,
 )
 
 @app.route("/")
