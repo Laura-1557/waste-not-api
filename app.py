@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import mysql.connector
 from config import HOST, DATABASE, USER, PASSWORD
 
@@ -12,19 +12,26 @@ connection = mysql.connector.connect(
     password=PASSWORD,
 )
 
+
 @app.route("/")
 def home():
-	return "Hello! this is the main page <h1>HELLO</h1>"
+    return "Hello! this is the main page <h1>HELLO</h1>"
 
-@app.get('/locations')
+
+@app.post('/locations')
 def get_all_locations():
     cur = connection.cursor(dictionary=True)
-    cur.execute("SELECT * FROM locations")
-    results = cur.fetchall()
+    longitude = float(request.form["longitude"])
+    latitude = float(request.form["latitude"])  # same for latitude
+    distance = int(request.form["distance"]) * 1600  # miles to metres!
+    cur.execute("SELECT *, latitude, longitude, ST_Distance_Sphere(Point(longitude, latitude), ST_GeomFromText('Point(%s %s)')) AS distance FROM locations HAVING distance < %s",
+                [longitude, latitude, distance])
+    output = cur.fetchall()
     cur.close()
-    response = jsonify(results)
+    response = jsonify(output)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
+
 
 @app.get('/locations/<int:id>')
 def get_location_by_id(id):
@@ -36,6 +43,7 @@ def get_location_by_id(id):
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
+
 @app.get('/locations/<int:id>/food_packs')
 def get_food_packs_by_location(id):
     cur = connection.cursor(dictionary=True)
@@ -46,6 +54,7 @@ def get_food_packs_by_location(id):
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
+
 @app.get('/food_packs/<int:id>')
 def get_food_pack_by_id(id):
     cur = connection.cursor(dictionary=True)
@@ -55,6 +64,7 @@ def get_food_pack_by_id(id):
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
+
 
 if __name__ == "__main__":
     app.run()
