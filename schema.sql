@@ -1,3 +1,6 @@
+CREATE DATABASE waste_not;
+USE waste_not;
+
 CREATE TABLE locations (
     id INT NOT NULL AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,

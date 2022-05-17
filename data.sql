@@ -1,3 +1,5 @@
+USE waste_not;
+
 INSERT INTO locations (
         name,
         address1,

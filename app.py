@@ -2,33 +2,58 @@ from flask import Flask, jsonify
 import mysql.connector
 
 app = Flask(__name__)
+port = 5000
 
-# Defining the home page of our site
-@app.route("/")  # this sets the route to this page
+connection = mysql.connector.connect(
+    host='localhost',
+    database='waste_not',
+    user='waste_not_admin',
+    password='admin',
+)
+
+@app.route("/")
 def home():
-	return "Hello! this is the main page <h1>HELLO</h1>"  # some basic inline html
+	return "Hello! this is the main page <h1>HELLO</h1>"
 
-@app.get('/location/<id>)
-def location(id):
-    cur = mysql.new_cursor(dictionary=True)
-    cur.execute("select * FROM locations WHERE id = %s", [id])
-    result = cursor.fetchone()
-    cursor.close()
+@app.get('/locations')
+def get_all_locations():
+    cur = connection.cursor(dictionary=True)
+    cur.execute("SELECT * FROM locations")
+    results = cur.fetchall()
+    cur.close()
+    response = jsonify(results)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+@app.get('/locations/<int:id>')
+def get_location_by_id(id):
+    cur = connection.cursor(dictionary=True)
+    cur.execute("SELECT * FROM locations WHERE id = %s", [id])
+    result = cur.fetchone()
+    cur.close()
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
-# test location function using search
-# change database password
+@app.get('/locations/<int:id>/food_packs')
+def get_food_packs_by_location(id):
+    cur = connection.cursor(dictionary=True)
+    cur.execute("SELECT * FROM food_packs WHERE locations_id = %s", [id])
+    results = cur.fetchall()
+    cur.close()
+    response = jsonify(results)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
-
-connection = mysql.connector.connect(
-    host='localhost',
-    database='database_waste_not',
-    user='root',
-    password='pass',
-)
+@app.get('/food_packs/<int:id>')
+def get_food_pack_by_id(id):
+    cur = connection.cursor(dictionary=True)
+    cur.execute("SELECT * FROM food_packs WHERE id = %s", [id])
+    result = cur.fetchone()
+    cur.close()
+    response = jsonify(result)
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
 
 if __name__ == "__main__":
     app.run()
-
