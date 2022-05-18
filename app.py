@@ -12,7 +12,6 @@ connection = mysql.connector.connect(
     password=PASSWORD,
 )
 
-
 @app.route("/")
 def home():
     return "Hello! this is the main page <h1>HELLO</h1>"
@@ -42,6 +41,7 @@ def get_location_by_id(id):
     response = jsonify(result)
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
+   
 
 
 @app.get('/locations/<int:id>/food_packs')
