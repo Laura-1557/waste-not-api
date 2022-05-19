@@ -12,7 +12,7 @@ connection = mysql.connector.connect(
     password=PASSWORD,
 )
 
-@app.route("/")
+@app.route("/", methods=['GET', 'POST'])
 def home():
     return "Hello! this is the main page <h1>HELLO</h1>"
 
