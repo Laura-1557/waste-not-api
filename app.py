@@ -31,6 +31,19 @@ def get_all_locations():
     response.headers.add("Access-Control-Allow-Origin", "*")
     return response
 
+@app.post('/foodpack')
+def add_food_pack():
+    cur = connection.cursor(dictionary=True)
+    locations_id = int(request.form["locations_id"])  
+    description = (request.form["description"])
+    cur.execute("INSERT INTO food_packs (locations_id, description) VALUES (%s, %s)", [locations_id, description])
+    connection.commit()
+    cur.close()
+    response = jsonify({ "success": True })
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    return response
+
+
 
 @app.get('/locations/<int:id>')
 def get_location_by_id(id):
